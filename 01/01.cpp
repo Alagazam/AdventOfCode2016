@@ -1,6 +1,18 @@
 #include <iostream>
 #include <string>
 #include <cctype>
+#include <utility>
+#include <unordered_set>
+
+using position = std::pair<int, int>;
+
+struct HashPosition
+{
+	size_t operator()(const position p) const
+	{
+		return p.first << 16 | p.second;
+	}
+};
 
 int main()
 {
@@ -10,6 +22,8 @@ int main()
 	int ypos{ 0 };
 	int dx{ 0 };
 	int dy{ 1 };
+	bool crossed{ false };
+	std::unordered_set<position, HashPosition> visited;
 	std::string::const_iterator pos = input.begin();
 	while (pos != input.end())
 	{
@@ -37,8 +51,20 @@ int main()
 			steps += (*pos - '0');
 			++pos;
 		}
-		xpos += (dx * steps);
-		ypos += (dy * steps);
+		for (int i = 0; i != steps; ++i)
+		{
+			xpos += dx;
+			ypos += dy;
+			if (!crossed)
+			{
+				auto insRes = visited.insert(std::make_pair(xpos, ypos));
+				if (!insRes.second)
+				{
+					crossed = true;
+					std::cout << "crossing at " << xpos << ":" << ypos << " Dist=" << abs(xpos + ypos) << std::endl;
+				}
+			}
+		}
 
 		while (pos != input.end() && !std::isalpha(*pos))
 		{
@@ -46,6 +72,6 @@ int main()
 		}
 
 	}
-	std::cout << xpos + ypos;
+	std::cout << "end at " << xpos << ":" << ypos << " Dist=" << abs(xpos + ypos) << std::endl;
 	return 0;
 }
