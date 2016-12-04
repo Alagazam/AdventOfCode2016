@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <utility>
 
 int main()
 {
@@ -9,33 +10,73 @@ int main()
 		"LLUUURRDUUDRRLDLRUDUDRLRDLLRDLLDRUULLURLRRLLUDRLDDDLLLRRRUDULDLLLDRLURDRLRRLURUDULLRULLLURRRRRDDDLULURUDLDUDULRRLUDDURRLULRRRDDUULRURRUULUURDRLLLDDRDDLRRULRDRDRLRURULDULRRDRLDRLLDRDURUUULDLLLRDRRRLRDLLUDRDRLURUURDLRDURRLUDRUDLURDRURLRDLULDURDDURUUDRLULLRLRLDDUDLLUUUURLRLRDRLRRRURLRULDULLLLDLRRRULLUUDLDURUUUDLULULRUDDLLDLDLRLDDUDURDRLLRRLRRDDUDRRRURDLRLUUURDULDLURULUDULRRLDUDLDDDUUDRDUULLDDRLRLLRLLLLURDDRURLDDULLULURLRDUDRDDURLLLUDLLLLLUDRDRDLURRDLUDDLDLLDDLUDRRDDLULRUURDRULDDDLLRLDRULURLRURRDDDRLUUDUDRLRRUDDLRDLDULULDDUDURRRURULRDDDUUDULLULDDRDUDRRDRDRDLRRDURURRRRURULLLRRLR",
 		"URLULLLDRDDULRRLRLUULDRUUULDRRLLDDDLDUULLDRLULRRDRRDDDRRDLRRLLDDRDULLRRLLUDUDDLDRDRLRDLRDRDDUUDRLLRLULLULRDRDDLDDDRLURRLRRDLUDLDDDLRDLDLLULDDRRDRRRULRUUDUULDLRRURRLLDRDRRDDDURUDRURLUDDDDDDLLRLURULURUURDDUDRLDRDRLUUUULURRRRDRDULRDDDDRDLLULRURLLRDULLUUDULULLLLRDRLLRRRLLRUDUUUULDDRULUDDDRRRULUDURRLLDURRDULUDRUDDRUURURURLRDULURDDDLURRDLDDLRUDUUDULLURURDLDURRDRDDDLRRDLLULUDDDRDLDRDRRDRURRDUDRUURLRDDUUDLURRLDRRDLUDRDLURUDLLRRDUURDUDLUDRRL" };
 
-	int key{ 5 };
-	int code{ 0 };
-	for (auto s : input)
+	//First Step
 	{
-		for (auto c : s)
+		int key{ 5 };
+		int code{ 0 };
+		for (auto s : input)
 		{
-			switch (c)
+			for (auto c : s)
 			{
-			case 'U':
-				if (key > 3) key -= 3;
-				break;
-			case 'D':
-				if (key < 7) key += 3;
-				break;
-			case 'L':
-				if (key%3 != 1) --key;
-				break;
-			case 'R':
-				if (key % 3 != 0) ++key;
-				break;
-			default:
-				break;
+				switch (c)
+				{
+				case 'U':
+					if (key > 3) key -= 3;
+					break;
+				case 'D':
+					if (key < 7) key += 3;
+					break;
+				case 'L':
+					if (key % 3 != 1) --key;
+					break;
+				case 'R':
+					if (key % 3 != 0) ++key;
+					break;
+				default:
+					break;
+				}
 			}
+			code *= 10;
+			code += key;
 		}
-		code *= 10;
-		code += key;
+		std::cout << "Code: " << code << std::endl;
 	}
-	std::cout << "Code: " << code << std::endl;
+
+	//Second Step
+	{
+		std::string lock[]{ "..1..",
+							".234.",
+							"56789",
+							".ABC.",
+							"..D.." };
+		struct Key { int row; int col; } key{ 0,2 };
+		std::string code;
+		for (auto s : input)
+		{
+			for (auto c : s)
+			{
+				switch (c)
+				{
+				case 'U':
+					if (key.row > 0 && lock[key.row - 1][key.col] != '.') --key.row;
+					break;
+				case 'D':
+					if (key.row < 4 && lock[key.row + 1][key.col] != '.') ++key.row;
+					break;
+				case 'L':
+					if (key.col > 0 && lock[key.row][key.col - 1] != '.') --key.col;
+					break;
+				case 'R':
+					if (key.col < 4 && lock[key.row][key.col + 1] != '.') ++key.col;
+					break;
+				default:
+					break;
+				}
+			}
+			code += lock[key.row][key.col];
+		}
+		std::cout << "Code: " << code << std::endl;
+	}
+
 	return 0;
 }
