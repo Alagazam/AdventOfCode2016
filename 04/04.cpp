@@ -28,6 +28,7 @@ int main()
 		{
 			enum class Mode { roomName, roomId, roomCheck } mode{ Mode::roomName };
 			std::array<uint16_t, 'z' - 'a' + 1>  charCount{ 0 };
+			std::string encryptedName;
 			uint16_t id{ 0 };
 			std::string check;
 			for (auto c : room)
@@ -39,10 +40,14 @@ int main()
 					if (isalpha(c))
 					{
 						++charCount[c - 'a'];
+						encryptedName += c;
 						break;
 					}
 					else if (c == '-')
+					{
+						encryptedName += c;
 						break;
+					}
 					else 
 						mode = Mode::roomId;
 						// fallthrough
@@ -98,8 +103,19 @@ int main()
 							if (check[4] != (max + 'a'))  std::cout << "  Invalid" << std::endl;
 							else
 							{
-								std::cout << "  Valid" << std::endl;
+								std::cout << "  Valid  ";
 								validIdSum += id;
+
+								// Decrypt:
+								std::string decryptedName;
+								for (auto c : encryptedName)
+								{
+									if (c != '-')
+										decryptedName += (((c - 'a') + id) % ('z' - 'a' +1) + 'a');
+									else
+										decryptedName += ' ';
+								}
+								std::cout << decryptedName << std::endl;
 							}
 						}
 					}
