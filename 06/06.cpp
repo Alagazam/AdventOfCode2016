@@ -25,6 +25,8 @@ const std::string testmessage[]
 
 int main()
 {
+	std::string max_message;
+	std::string min_message;
 	for (uint32_t i = 0; i != message[0].length(); ++i)
 	{
 		uint32_t freq['z' - 'a' + 1]{ 0 };
@@ -40,8 +42,24 @@ int main()
 				maxfreq = freq[c];
 			}
 		}
-		std::cout << maxfreqchar;
+		max_message += maxfreqchar;
+
+		uint32_t minfreq{ 99999 };
+		char minfreqchar{ '_' };
+		char c{ 'a' };
+		for (auto f : freq)
+		{
+			if (minfreq > f)
+			{
+				minfreq = f;
+				minfreqchar = c;
+			}
+			++c;
+		}
+		min_message += minfreqchar;
+
 	}
-	std::cout << std::endl;
+	std::cout << "Max message:" << max_message << std::endl;
+	std::cout << "Min message:" << min_message << std::endl;
 	return 0;
 }
